@@ -1,30 +1,16 @@
-import { EntityComponentSystem } from "./EntityComponentSystem/EntityComponentSystem";
+import { EntityComponentSystem } from './EntityComponentSystem/EntityComponentSystem';
+
+let instance: EntityComponentSystem | null = null;
 
 /**
- * The ECS class provides a singleton instance of the EntityComponentSystem.
- * It initializes with a set of predefined systems.
+ * Retrieves the singleton instance of the EntityComponentSystem.
+ * If the instance does not already exist, it initializes a new one.
+ *
+ * @returns {EntityComponentSystem} The singleton instance of the EntityComponentSystem.
  */
-export class ECS {
-   /**
-    * The static field that holds the singleton instance of EntityComponentSystem.
-    */
-   private static instance: EntityComponentSystem | null = null;
-
-   /**
-    * Private constructor to prevent direct instantiation.
-    */
-   private constructor() {}
-
-   /**
-    * Provides access to the singleton instance of EntityComponentSystem.
-    * Initializes the instance if it doesn't exist.
-    *
-    * @returns The singleton instance of EntityComponentSystem.
-    */
-   public static get(): EntityComponentSystem {
-      if (!ECS.instance) {
-         ECS.instance = new EntityComponentSystem();
-      }
-      return ECS.instance;
-   }
+export function getECS(): EntityComponentSystem {
+  if (!instance) {
+    instance = new EntityComponentSystem();
+  }
+  return instance;
 }

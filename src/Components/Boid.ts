@@ -1,4 +1,4 @@
-import { Component } from "../EntityComponentSystem/Component";
+import { Component } from '../EntityComponentSystem/Component';
 
 /**
  * The Boid component is a marker component used to identify entities

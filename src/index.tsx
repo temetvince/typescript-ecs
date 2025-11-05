@@ -1,22 +1,16 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
-import { App } from "./App";
+import React from 'react';
+import App from './App';
+import { createRoot } from 'react-dom/client';
 
-/**
- * Initializes and renders the React application.
- */
-function initializeReactApp() {
-   const container = document.getElementById("root");
+const rootElement = document.getElementById('root');
 
-   if (container) {
-      const root = createRoot(container);
-      root.render(<App />);
-   } else {
-      console.error(
-         "Root container not found. Unable to initialize the React app.",
-      );
-   }
+if (rootElement) {
+  const root = createRoot(rootElement);
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+  );
+} else {
+  console.error('Root element not found');
 }
-
-// Call the function to initialize the React application
-initializeReactApp();

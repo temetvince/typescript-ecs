@@ -1,3 +1,10 @@
 module.exports = {
-   tabWidth: 3,
+   endOfLine: 'lf',
+   experimentalTernaries: true,
+   jsxSingleQuote: true,
+   proseWrap: 'always',
+   singleAttributePerLine: true,
+   singleQuote: true,
+   tabWidth: 2,
+   trailingComma: 'all',
 };

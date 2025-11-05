@@ -1,6 +1,13 @@
-import { Component } from "./Component";
+import { Component } from './Component';
 
-type ComponentClass<T extends Component> = new (...args: any[]) => T;
+/**
+ * A type representing the class of a Component.
+ * This is used to refer to Component types in a type-safe manner.
+ */
+export type ComponentClass<T extends Component> = abstract new (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ...args: any[]
+) => T;
 
 /**
  * This custom container is so that calling code can provide the
@@ -8,12 +15,9 @@ type ComponentClass<T extends Component> = new (...args: any[]) => T;
  * provide the Component *class* otherwise (e.g., get(Position),
  * has(Position), delete(Position)).
  *
- * We also use two different types to refer to the Component's class:
- * `Function` and `ComponentClass<T>`. We use `Function` in most cases
- * because it is simpler to write. We use `ComponentClass<T>` in the
- * `get()` method, when we want TypeScript to know the type of the
- * instance that is returned. Just think of these both as referring to
- * the same thing: the underlying class of the Component.
+ * We now use `ComponentClass<T>` consistently instead of `Function` for type safety.
+ * This avoids the broad `Function` type and ensures only valid component constructors
+ * are used as keys.
  *
  * You might notice a footgun here: code that gets this object can
  * directly modify the Components inside (with add(...) and delete(...)).
@@ -22,76 +26,80 @@ type ComponentClass<T extends Component> = new (...args: any[]) => T;
  * the Components that can't change them.
  */
 export class ComponentContainer {
-   private map = new Map<Function, Component>();
+  private map = new Map<ComponentClass<Component>, Component>();
 
-   /**
-    * Adds a component to the container.
-    * @param component - The component to add.
-    */
-   public add(component: Component): void {
-      this.map.set(component.constructor, component);
-   }
+  /**
+   * Adds a component to the container.
+   * @param component - The component to add.
+   */
+  public add(component: Component): void {
+    this.map.set(component.constructor as ComponentClass<Component>, component);
+  }
 
-   /**
-    * Retrieves a component of the specified type from the container.
-    * @param componentClass - The class of the component to retrieve.
-    * @returns The component of the specified type, or undefined if not found.
-    */
-   public get<T extends Component>(
-      componentClass: ComponentClass<T>,
-   ): T | undefined {
-      return this.map.get(componentClass) as T;
-   }
+  /**
+   * Retrieves a component of the specified type from the container.
+   * @param componentClass - The class of the component to retrieve.
+   * @returns The component of the specified type, or undefined if not found.
+   */
+  public get<T extends Component>(
+    componentClass: ComponentClass<T>,
+  ): T | undefined {
+    return this.map.get(componentClass) as T | undefined;
+  }
 
-   /**
-    * Checks if any component in the container is marked as dirty.
-    * @returns True if any component is dirty, false otherwise.
-    */
-   public isDirty(): boolean {
-      for (const component of this.map.values()) {
-         if (component.isDirty) {
-            return true;
-         }
+  /**
+   * Checks if any component in the container is marked as dirty.
+   * @returns True if any component is dirty, false otherwise.
+   */
+  public isDirty(): boolean {
+    for (const component of this.map.values()) {
+      if (component.isDirty) {
+        return true;
       }
-      return false;
-   }
+    }
+    return false;
+  }
 
-   /**
-    * Resets the dirty state of the specified component class.
-    * @param componentClass - The component class to reset the dirty state for.
-    */
-   public resetDirty(componentClass: Function): void {
-      this.map.get(componentClass)?.resetDirty();
-   }
+  /**
+   * Resets the dirty state of the specified component class.
+   * @param componentClass - The component class to reset the dirty state for.
+   */
+  public resetDirty<T extends Component>(
+    componentClass: ComponentClass<T>,
+  ): void {
+    this.map.get(componentClass)?.resetDirty();
+  }
 
-   /**
-    * Checks if the container has a component of the specified type.
-    * @param componentClass - The class of the component to check.
-    * @returns True if the container has the component, false otherwise.
-    */
-   public has(componentClass: Function): boolean {
-      return this.map.has(componentClass);
-   }
+  /**
+   * Checks if the container has a component of the specified type.
+   * @param componentClass - The class of the component to check.
+   * @returns True if the container has the component, false otherwise.
+   */
+  public has<T extends Component>(componentClass: ComponentClass<T>): boolean {
+    return this.map.has(componentClass);
+  }
 
-   /**
-    * Checks if the container has all the specified components.
-    * @param componentClasses - An iterable of component classes to check.
-    * @returns True if the container has all the components, false otherwise.
-    */
-   public hasAll(componentClasses: Iterable<Function>): boolean {
-      for (const cls of componentClasses) {
-         if (!this.map.has(cls)) {
-            return false;
-         }
+  /**
+   * Checks if the container has all the specified components.
+   * @param componentClasses - An iterable of component classes to check.
+   * @returns True if the container has all the components, false otherwise.
+   */
+  public hasAll<T extends Component>(
+    componentClasses: Iterable<ComponentClass<T>>,
+  ): boolean {
+    for (const cls of componentClasses) {
+      if (!this.map.has(cls)) {
+        return false;
       }
-      return true;
-   }
+    }
+    return true;
+  }
 
-   /**
-    * Deletes a component from the container.
-    * @param componentClass - The class of the component to delete.
-    */
-   public delete(componentClass: Function): void {
-      this.map.delete(componentClass);
-   }
+  /**
+   * Deletes a component from the container.
+   * @param componentClass - The class of the component to delete.
+   */
+  public delete<T extends Component>(componentClass: ComponentClass<T>): void {
+    this.map.delete(componentClass);
+  }
 }
