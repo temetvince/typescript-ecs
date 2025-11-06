@@ -46,8 +46,11 @@ export class Display extends System {
     position: Position,
     color: Color,
   ): void {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     p5.stroke(color.getColor());
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     p5.strokeWeight(10);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     p5.point(position.getX(), position.getY());
   }
 }

@@ -18,9 +18,10 @@ const WOBBLE_AMPLITUDE = 0.5;
 /**
  * Initializes the Entity Component System (ECS) and sets up the game entities and systems.
  *
+ * @param transparency - The transparency level for the ColorManager system. 1 is fully opaque, 0 is fully transparent.
  * @returns The initialized entity component system.
  */
-export const GameSetup = (): EntityComponentSystem => {
+export const GameSetup = (transparency: number): EntityComponentSystem => {
   const ecs = getECS();
 
   // Initialize entities with Position, Velocity, Boid, and Wobble components
@@ -28,7 +29,7 @@ export const GameSetup = (): EntityComponentSystem => {
 
   // Add systems to the ECS in the correct order
   ecs.addSystem(new GroupManager());
-  ecs.addSystem(new ColorManager());
+  ecs.addSystem(new ColorManager(transparency));
   ecs.addSystem(new Wobbler());
   ecs.addSystem(new BoidBehavior());
   ecs.addSystem(new BoundaryCollision());
