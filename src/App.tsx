@@ -14,12 +14,13 @@ const sketch: Sketch = (p5) => {
   p5.setup = () => {
     const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight);
     canvas.style('display', 'block');
+    canvas.style('background-color', '#000');
     ecs = GameSetup();
   };
 
   p5.draw = () => {
     if (ecs) {
-      p5.background(0); // Clear the background each frame
+      p5.clear();
       ecs.update(p5);
     }
   };
