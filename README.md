@@ -56,6 +56,20 @@ $ npm start
 To use the ECS Demo in your own React project, import the `ecs` folder which
 includes the `ECSDemo` component along with the ECS implementation.
 
+Dependencies:
+
+```json
+"@p5-wrapper/react": "4.x",
+```
+
+DevDependencies:
+
+```json
+"@types/p5": "1.x",
+```
+
+Import the `ECSDemo` component:
+
 ```tsx
 import ECSDemo from './ecs/ECSDemo';
 ```
