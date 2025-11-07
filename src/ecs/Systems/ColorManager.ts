@@ -26,6 +26,7 @@ export class ColorManager extends System {
   /**
    * Creates a random color with the specified alpha value.
    * @param alpha - The alpha (transparency) value for the color (0 to 1).
+   * 0 is fully transparent, 1 is fully opaque.
    */
   constructor(alpha?: number) {
     super();
@@ -107,7 +108,7 @@ export class ColorManager extends System {
 
   /**
    * Generates a random RGBA color.
-   * @returns {object} - The random RGBA color object with alpha between 0.5 and 1.0.
+   * @returns {object} - The random RGBA color object.
    */
   private getRandomColor(): { r: number; g: number; b: number; a: number } {
     return {
