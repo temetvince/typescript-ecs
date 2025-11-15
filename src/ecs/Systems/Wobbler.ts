@@ -2,7 +2,7 @@ import { System } from '../EntityComponentSystem/System';
 import { Wobble } from '../Components/Wobble';
 import { Position } from '../Components/Position';
 import { Boid } from '../Components/Boid';
-import { Entity } from '../EntityComponentSystem/EntityComponentSystem';
+import { Entity } from '../EntityComponentSystem/Entity';
 
 /**
  * The Wobbler system updates the wobble offsets for entities,

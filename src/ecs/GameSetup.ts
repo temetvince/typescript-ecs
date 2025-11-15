@@ -10,7 +10,6 @@ import { GroupManager } from './Systems/GroupManager';
 import { ColorManager } from './Systems/ColorManager';
 import { Wobble } from './Components/Wobble';
 import { Wobbler } from './Systems/Wobbler';
-import { getECS } from './ECS';
 
 const NUMBER_OF_BOIDS = 150;
 const WOBBLE_AMPLITUDE = 0.5;
@@ -22,7 +21,7 @@ const WOBBLE_AMPLITUDE = 0.5;
  * @returns The initialized entity component system.
  */
 export const GameSetup = (transparency: number): EntityComponentSystem => {
-  const ecs = getECS();
+  const ecs = new EntityComponentSystem();
 
   // Initialize entities with Position, Velocity, Boid, and Wobble components
   initializeEntities(ecs, NUMBER_OF_BOIDS);

@@ -1,13 +1,7 @@
-import { P5CanvasInstance } from '@p5-wrapper/react';
 import { Component } from './Component';
 import { ComponentContainer, ComponentClass } from './ComponentContainer';
 import { System } from './System';
-import { createUUID } from '../Utils';
-
-/**
- * Entity type: a unique string ID (UUID).
- */
-export type Entity = string;
+import Entity from './Entity';
 
 /**
  * The EntityComponentSystem (ECS) is the main driver; it's the backbone of the engine that
@@ -21,7 +15,6 @@ export class EntityComponentSystem {
   private systems = new Map<System, Set<Entity>>();
 
   // Bookkeeping for entities.
-  private nextEntityID = createUUID();
   private entitiesToDestroy: Entity[] = [];
 
   // API: Entities
@@ -31,8 +24,7 @@ export class EntityComponentSystem {
    * @returns The newly created entity.
    */
   public addEntity(): Entity {
-    const entity = this.nextEntityID;
-    this.nextEntityID = createUUID();
+    const entity = Entity.create();
     this.entities.set(entity, new ComponentContainer());
     return entity;
   }
@@ -114,9 +106,9 @@ export class EntityComponentSystem {
    * This is ordinarily called once per tick (e.g., every frame). It
    * updates all Systems, then destroys any Entities that were marked
    * for removal.
-   * @param p5 - The p5 instance to use for drawing.
+   * @param context - The context to use for updating systems.
    */
-  public update(p5: P5CanvasInstance): void {
+  public update(context?: unknown): void {
     for (const [system, entities] of this.systems.entries()) {
       const entitiesToUse = new Set<Entity>();
 
@@ -133,7 +125,7 @@ export class EntityComponentSystem {
         }
       }
 
-      system.update(entitiesToUse, p5);
+      system.update(entitiesToUse, context);
     }
 
     while (this.entitiesToDestroy.length > 0) {

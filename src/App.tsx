@@ -1,7 +1,7 @@
-import ECSDemo from './ecs/ECSDemo';
 import React from 'react';
 
 import './App.css';
+import Game from './phaser/Game';
 
 export default function App() {
   return (
@@ -14,8 +14,8 @@ export default function App() {
         zIndex: 0,
       }}
     >
-      <div id='ecs-demo'>
-        <ECSDemo transparency={1} />
+      <div id='game'>
+        <Game />
       </div>
     </div>
   );

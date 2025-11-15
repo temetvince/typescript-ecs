@@ -1,7 +1,7 @@
-import { P5CanvasInstance } from '@p5-wrapper/react';
-import { Entity, EntityComponentSystem } from './EntityComponentSystem';
+import { EntityComponentSystem } from './EntityComponentSystem';
 import { ComponentClass } from './ComponentContainer';
 import { Component } from './Component';
+import Entity from './Entity';
 
 /**
  * A System cares about a set of Components. It will run on every Entity
@@ -43,7 +43,7 @@ export abstract class System {
   /**
    * update() is called on the System every frame.
    * @param entities - The set of entities to update.
-   * @param p5 - The p5 instance to use for drawing.
+   * @param context - The context to use for drawing.
    */
-  public abstract update(entities: Set<Entity>, p5?: P5CanvasInstance): void;
+  public abstract update(entities: Set<Entity>, context?: unknown): void;
 }
