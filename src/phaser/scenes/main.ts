@@ -9,7 +9,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    this.ecs = GameSetup(0.8);
+    this.ecs = GameSetup();
   }
 
   update(): void {

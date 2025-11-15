@@ -11,24 +11,42 @@ import { ColorManager } from './Systems/ColorManager';
 import { Wobble } from './Components/Wobble';
 import { Wobbler } from './Systems/Wobbler';
 
-const NUMBER_OF_BOIDS = 150;
-const WOBBLE_AMPLITUDE = 0.5;
+/**
+ * Options for setting up the game.
+ * @property boidsCount - The number of boid entities to create.
+ * @property transparency - The transparency level for the boids.
+ * @property wobbleAmplitude - The amplitude of the wobble effect.
+ */
+export interface GameSetupOptions {
+  boidsCount?: number;
+  transparency?: number;
+  wobbleAmplitude?: number;
+}
 
 /**
  * Initializes the Entity Component System (ECS) and sets up the game entities and systems.
  *
- * @param transparency - The transparency level for the ColorManager system. 1 is fully opaque, 0 is fully transparent.
+ * @param options - The configuration options for setting up the game.
+ *
  * @returns The initialized entity component system.
  */
-export const GameSetup = (transparency: number): EntityComponentSystem => {
+export const GameSetup = (
+  gameSetupOptions?: GameSetupOptions,
+): EntityComponentSystem => {
+  const options = {
+    boidsCount: 150,
+    transparency: 0.8,
+    wobbleAmplitude: 0.5,
+    ...(gameSetupOptions || {}),
+  };
   const ecs = new EntityComponentSystem();
 
   // Initialize entities with Position, Velocity, Boid, and Wobble components
-  initializeEntities(ecs, NUMBER_OF_BOIDS);
+  initializeEntities(ecs, options.boidsCount, options.wobbleAmplitude);
 
   // Add systems to the ECS in the correct order
   ecs.addSystem(new GroupManager());
-  ecs.addSystem(new ColorManager(transparency));
+  ecs.addSystem(new ColorManager(options.transparency));
   ecs.addSystem(new Wobbler());
   ecs.addSystem(new BoidBehavior());
   ecs.addSystem(new BoundaryCollision());
@@ -47,11 +65,12 @@ export const GameSetup = (transparency: number): EntityComponentSystem => {
 const initializeEntities = (
   ecs: EntityComponentSystem,
   count: number,
+  wobbleAmplitude: number,
 ): void => {
   for (let i = 0; i < count; i++) {
     const position = getRandomPosition();
     const velocity = getRandomVelocity();
-    const wobble = getRandomWobble();
+    const wobble = getRandomWobble(wobbleAmplitude);
 
     const entity = ecs.addEntity();
     ecs.addComponent(entity, position);
@@ -86,11 +105,12 @@ const getRandomVelocity = (): Velocity => {
 /**
  * Generates a random wobble component.
  *
+ * @param wobbleAmplitude - The amplitude of the wobble effect.
  * @returns A new Wobble component with random frequency and phase values.
  */
-const getRandomWobble = (): Wobble => {
+const getRandomWobble = (wobbleAmplitude: number): Wobble => {
   const frequency = Math.random() * 0.5 + 0.5; // Random frequency for different wobble speeds
   const phaseX = Math.random() * Math.PI * 2;
   const phaseY = Math.random() * Math.PI * 2;
-  return new Wobble(frequency, WOBBLE_AMPLITUDE, phaseX, phaseY);
+  return new Wobble(frequency, wobbleAmplitude, phaseX, phaseY);
 };
