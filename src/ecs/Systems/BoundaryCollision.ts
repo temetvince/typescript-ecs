@@ -1,9 +1,9 @@
+import Phaser from 'phaser';
 import { System } from '../EntityComponentSystem/System';
 import { Position } from '../Components/Position';
 import { Velocity } from '../Components/Velocity';
 import { Boid } from '../Components/Boid';
-import { P5CanvasInstance } from '@p5-wrapper/react';
-import { Entity } from '../EntityComponentSystem/EntityComponentSystem';
+import Entity from '../EntityComponentSystem/Entity';
 
 /**
  * The BoundaryCollision system handles collisions of boids with the canvas boundaries,
@@ -13,15 +13,24 @@ export class BoundaryCollision extends System {
   componentsRequired = new Set<typeof Position | typeof Velocity | typeof Boid>(
     [Position, Velocity, Boid],
   );
-  public dirtyComponents = new Set<typeof Velocity>();
+  public dirtyComponents = new Set<typeof Velocity>([Velocity]);
 
   /**
    * Updates the system by handling boundary wrapping for all entities.
    *
    * @param entities - The set of entities to be updated.
-   * @param p5 - The p5.js instance used for boundary detection.
+   * @param context - Phaser.Scene (or similar) used for boundary detection.
    */
-  update(entities: Set<Entity>, p5: P5CanvasInstance): void {
+  update(entities: Set<Entity>, context?: unknown): void {
+    const scene = context as Phaser.Scene | undefined;
+    if (!scene) return;
+
+    // Prefer the scene scale manager; fallback to canvas or window size if necessary.
+    const width =
+      scene.scale.width || scene.sys.canvas.width || window.innerWidth;
+    const height =
+      scene.scale.height || scene.sys.canvas.height || window.innerHeight;
+
     for (const entity of entities) {
       const components = this.ecs.getComponents(entity);
       if (!components) continue;
@@ -30,7 +39,7 @@ export class BoundaryCollision extends System {
       const velocity = components.get(Velocity);
 
       if (position && velocity) {
-        this.applyBoundaryWrapping(position, velocity, p5);
+        this.applyBoundaryWrapping(position, velocity, width, height);
       }
     }
   }
@@ -40,22 +49,24 @@ export class BoundaryCollision extends System {
    *
    * @param position - The Position component of the entity.
    * @param velocity - The Velocity component of the entity.
-   * @param p5 - The p5.js instance used for boundary detection.
+   * @param width - Width of the render area to use for wrapping.
+   * @param height - Height of the render area to use for wrapping.
    */
   private applyBoundaryWrapping(
     position: Position,
     velocity: Velocity,
-    p5: P5CanvasInstance,
+    width: number,
+    height: number,
   ): void {
     if (position.getX() < 0) {
-      position.setX(p5.width);
-    } else if (position.getX() > p5.width) {
+      position.setX(width);
+    } else if (position.getX() > width) {
       position.setX(0);
     }
 
     if (position.getY() < 0) {
-      position.setY(p5.height);
-    } else if (position.getY() > p5.height) {
+      position.setY(height);
+    } else if (position.getY() > height) {
       position.setY(0);
     }
   }

@@ -1,9 +1,9 @@
 import { Boid } from '../Components/Boid';
 import { Group } from '../Components/Group';
 import { Position } from '../Components/Position';
-import { Entity } from '../EntityComponentSystem/EntityComponentSystem';
+import Entity from '../EntityComponentSystem/Entity';
 import { System } from '../EntityComponentSystem/System';
-import { createUUID, getNeighbors } from '../Utils';
+import { getNeighbors, uuid } from '../Utils';
 
 const PERCEPTION_RADIUS = 150;
 
@@ -31,6 +31,7 @@ export class GroupManager extends System {
 
       const groupId = group.getId();
       const neighbors = getNeighbors(
+        this.ecs,
         entity,
         entities,
         components.get(Position) ??
@@ -53,7 +54,7 @@ export class GroupManager extends System {
    * @returns The newly assigned Group component.
    */
   private assignGroupToEntity(entity: Entity): Group {
-    const group = new Group(createUUID());
+    const group = new Group(uuid());
     this.ecs.addComponent(entity, group);
     return group;
   }

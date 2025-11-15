@@ -2,7 +2,7 @@ import { System } from '../EntityComponentSystem/System';
 import { Position } from '../Components/Position';
 import { Velocity } from '../Components/Velocity';
 import { Boid } from '../Components/Boid';
-import { Entity } from '../EntityComponentSystem/EntityComponentSystem';
+import { Entity } from '../EntityComponentSystem/Entity';
 
 /**
  * The Movement system is responsible for updating the position of entities

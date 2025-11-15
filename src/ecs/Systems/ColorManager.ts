@@ -3,7 +3,7 @@ import { Boid } from '../Components/Boid';
 import { Group } from '../Components/Group';
 import { Position } from '../Components/Position';
 import { System } from '../EntityComponentSystem/System';
-import { Entity } from '../EntityComponentSystem/EntityComponentSystem';
+import { Entity } from '../EntityComponentSystem/Entity';
 
 const TRANSITION_DURATION = 10000; // Duration of the color transition in milliseconds
 
